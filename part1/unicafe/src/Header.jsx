@@ -10,9 +10,6 @@ const Header = ({title, stats, max}) => {
      <div>
      <h1>{stats}</h1>
     </div>
-    <div>
-     <h2>{max}</h2>
-    </div>
     </>
   )
 }
