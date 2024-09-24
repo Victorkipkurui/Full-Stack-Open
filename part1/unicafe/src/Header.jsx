@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Header = ({title, stats}) => {
+const Header = ({title, stats, max}) => {
   
   return (
     <>
@@ -9,6 +9,9 @@ const Header = ({title, stats}) => {
     </div>
      <div>
      <h1>{stats}</h1>
+    </div>
+    <div>
+     <h2>{max}</h2>
     </div>
     </>
   )
