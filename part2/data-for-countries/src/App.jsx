@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import countriesService from './services/countries';
+import weatherService from './services/weather';
 
 const RenderCountries = ({ filteredCountries, showCountryDetails, renderCountryDetails}) => {
   if (filteredCountries.length > 10) {
@@ -30,7 +31,7 @@ const App = () => {
 
   useEffect(() => {
     countriesService
-      .getAll()
+      .getCountries()
       .then((initialData) => {
         setCountries(initialData);
       })
@@ -53,6 +54,13 @@ const App = () => {
 
   const showCountryDetails = (country) => {
     setSelectedCountry(country);
+    weatherService.getWeather(country.capital[0])
+      .then(weatherData => {
+        setWeather(weatherData);
+      })
+      .catch((error) => {
+        console.error('Error fetching weather data:', error);
+      });
   };
 
   const renderCountryDetails = (country) => {
@@ -72,6 +80,16 @@ const App = () => {
           alt={`Flag of ${country.name.common}`}
           width="200"
         />
+          {weather ? (
+          <div>
+            <h3>Weather in {country.capital}</h3>
+            <p><strong>Temperature:</strong> {weather.main.temp} °C</p>
+            <p><strong>Weather:</strong> {weather.weather[0].description}</p>
+            <p><strong>Wind:</strong> {weather.wind.speed} m/s</p>
+          </div>
+        ) : (
+          <p>Loading weather data...</p>
+        )}
       </div>
     );
   };
