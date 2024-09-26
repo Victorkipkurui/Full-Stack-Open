@@ -1,0 +1,49 @@
+h2 {
+  color: green;
+  font-style: italic; 
+}
+.message {
+  color:green;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.error {
+  color:red;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.del{
+  background-color: red;
+  padding: 5px 10px;
+  color: white;
+  border: none;
+  margin-left: 20px;
+  cursor: pointer;
+}
+.search{
+  background-color:blue;
+  padding: 5px 10px;
+  color: white;
+  border: none;
+  margin-left: 20px;
+  cursor: pointer;
+}
+.add{
+  background-color:green;
+  padding: 5px 10px;
+  color: white;
+  border: none;
+  margin-top: 5px;
+  cursor: pointer;
+}
+.name{
+  margin-bottom: 10px;
+}
