@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const api_key = process.env.REACT_APP_WEATHER_API_KEY;
+const api_key = import.meta.env.VITE_WEATHER_API_KEY;
 
 const baseUrl = 'https://api.openweathermap.org/data/2.5/weather';
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import countriesService from './services/countries';
 import weatherService from './services/weather';
 
-const RenderCountries = ({ filteredCountries, showCountryDetails, renderCountryDetails}) => {
+const RenderCountries = ({ filteredCountries, showCountryDetails, renderCountryDetails }) => {
   if (filteredCountries.length > 10) {
     return <p>Too many matches, specify another filter</p>;
   } else if (filteredCountries.length > 1) {
@@ -27,7 +27,7 @@ const App = () => {
   const [search, setSearch] = useState('');
   const [filteredCountries, setFilteredCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
-
+  const [weather, setWeather] = useState(null);
 
   useEffect(() => {
     countriesService
@@ -38,6 +38,7 @@ const App = () => {
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
+      console.log(countries);
   }, []);
 
   const handleSearchChange = (event) => {
@@ -54,13 +55,16 @@ const App = () => {
 
   const showCountryDetails = (country) => {
     setSelectedCountry(country);
-    weatherService.getWeather(country.capital[0])
-      .then(weatherData => {
+    setWeather(null); 
+    weatherService
+      .getWeather(country.capital[0])
+      .then((weatherData) => {
         setWeather(weatherData);
       })
       .catch((error) => {
         console.error('Error fetching weather data:', error);
       });
+      console.log(weather);
   };
 
   const renderCountryDetails = (country) => {
@@ -80,7 +84,7 @@ const App = () => {
           alt={`Flag of ${country.name.common}`}
           width="200"
         />
-          {weather ? (
+        {weather ? (
           <div>
             <h3>Weather in {country.capital}</h3>
             <p><strong>Temperature:</strong> {weather.main.temp} °C</p>
@@ -104,7 +108,7 @@ const App = () => {
         placeholder="Search for a country"
       />
       
-      {/* If a country is selected, show details */}
+      
       {selectedCountry ? (
         renderCountryDetails(selectedCountry)
       ) : (
