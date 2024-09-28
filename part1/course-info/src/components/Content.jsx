@@ -1,10 +1,10 @@
 import React from 'react'
 import Part from './Part'
 
-const Content = (props) => {
+const Content = ({parts}) => {
   return (
     <>
-    {props.parts.map((part, index) => (
+    {parts.map((part, index) => (
      <Part key={index} name={part.name} exercises={part.exercises} />
       ))}
     </>
