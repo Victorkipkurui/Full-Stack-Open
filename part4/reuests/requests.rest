@@ -1,0 +1,11 @@
+GET  http://localhost:3003/api/blogs
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Coming Home",
+  "author": "Victor",
+  "url": "https://blogs/4",
+  "likes": 7
+}
