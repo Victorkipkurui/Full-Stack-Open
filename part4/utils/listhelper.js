@@ -8,7 +8,6 @@ const totalLikes = (blogs) => {
   return blogs.reduce((sum, blog) => sum + blog.likes, 0);
 };
 
-
 const favoriteBlog = (blogs) => {
   const favorite = _.maxBy(blogs, 'likes');
   return {

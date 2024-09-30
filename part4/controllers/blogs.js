@@ -1,26 +1,18 @@
 const express = require('express');
+require('express-async-errors');
 const blogsRouter = express.Router();
 const Blog = require('../models/blog');
 
-blogsRouter.get('/', (request, response) => {
-  Blog.find({})
-    .then(blogs => {
+blogsRouter.get('/', async (request, response) => {
+  const blogs = await Blog.find({})
       response.json(blogs);
-    })
-    .catch(error => {
-      response.status(500).json({ error: 'Something went wrong while fetching blogs' });
-    });
 });
 
-blogsRouter.post('/', (request, response) => {
-  const blog = new Blog(request.body);
-  blog.save()
-    .then(result => {
-      response.status(201).json(result);
-    })
-    .catch(error => {
-      response.status(400).json({ error: 'Failed to create blog' });
-    });
+blogsRouter.post('/', async (request, response) => {
+  const blog = await new Blog(request.body);
+  const savedBlog = blog.save()
+  response.status(201).json(savedBlog);
+      
 });
 
 module.exports = blogsRouter;
