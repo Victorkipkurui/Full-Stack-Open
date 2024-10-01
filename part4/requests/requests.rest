@@ -4,8 +4,10 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Coming Home",
+  "title": "Cong Home",
   "author": "Victor",
   "url": "https://blogs/4",
-  "likes": 7
+  "likes": 10
 }
+###
+GET  http://localhost:3003/api/blogs/66fc56354c06e13d00b2b85e

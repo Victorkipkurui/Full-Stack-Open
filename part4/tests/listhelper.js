@@ -93,14 +93,6 @@ const blogsInDb = async () => {
   return blogs.map(blog => blog.toJSON())
 }
 
-const nonExistingId = async () => {
-  const blog = new Blog({ content: 'willremovethissoon' })
-  await note.save()
-  await note.deleteOne()
-
-  return note._id.toString()
-}
-
 module.exports = {
   dummy,
   totalLikes,

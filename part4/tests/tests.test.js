@@ -122,8 +122,9 @@ describe('when there is initially some blogs saved', () => {
   describe('POST /api/blogs', () => {
     it('should default the likes property to 0 if missing', async () => {
       const newBlog = {
-        title: 'Test Blog',
-        author: 'John Doe',
+        title: 'Coming HOme',
+        author: 'Kipkurui Victor',
+        url: 'https://example.com',
     
       };
       const response = await request(app)
@@ -137,8 +138,9 @@ describe('when there is initially some blogs saved', () => {
   describe('POST /api/blogs', () => {
     test('should respond with 400 Bad Request if the title is missing', async () => {
       const newBlog = {
-        author: 'John Doe',
-        url: 'http://example.com',
+        author: 'Kipkurui Victor',
+        url: 'https://example.com',
+        likes: 7, 
       };
   
       const response = await request(app)
@@ -151,8 +153,9 @@ describe('when there is initially some blogs saved', () => {
   
     test('should respond with 400 Bad Request if the url is missing', async () => {
       const newBlog = {
-        author: 'John Doe',
-        title: 'Test Blog',
+        title: 'Coming HOme',
+        author: 'Kipkurui Victor',
+        likes: 7, 
       
       };
       const response = await request(app)
@@ -163,6 +166,40 @@ describe('when there is initially some blogs saved', () => {
       expect(response.body.error).toBe('Title and URL are required');
     });
   });
+
+  describe('deletion of a blog', () => {
+    test('succeeds with status code 204 if id is valid', async () => {
+      const blogsAtStart = await listHelper.blogsInDb()
+      const blogToDelete = blogsAtStart[0]
+
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(204)
+
+      const blogsAtEnd = await listHelper.blogsInDb()
+
+      assert.strictEqual(blogsAtEnd.length, blogs.length - 1)
+    })
+  })
+
+  blogsRouter.put('/:id', async (req, res) => {
+    const { likes } = req.body;
+    if (likes === undefined) {
+      return res.status(400).json({ error: "'likes' field is required" });
+    }
+      const updatedBlog = await Blog.findByIdAndUpdate(
+        req.params.id,
+        { likes },
+        { new: true} 
+      );
+  
+      if (!updatedBlog) {
+        return res.status(404).json({ error: 'Blog post not found' });
+      }
+      res.json(updatedBlog);
+    } 
+  );
+  
 
 after(async () => {
   await mongoose.connection.close()

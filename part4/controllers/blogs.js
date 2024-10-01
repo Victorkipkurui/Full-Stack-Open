@@ -23,6 +23,9 @@ blogsRouter.post('/', async (req, res) => {
   if (!title || !url) {
     return res.status(400).json({ error: 'Title and URL are required' });
   }
+  if (!likes){
+    
+  }
   const blog = new Blog({
     title,
     url,
