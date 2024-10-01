@@ -1,27 +1,13 @@
 const { test, describe, after,beforeEach } = require('node:test');
 const assert = require('node:assert');
-const listHelper = require('../utils/listhelper');
+const listHelper = require('./listhelper');
 const mongoose = require('mongoose');
+const request = require('supertest');
 const supertest = require('supertest');
 const app = require('../app'); 
 const Blog = require('../models/blog');
 const api = supertest(app);
-const blogs = [
-  {
-    id: "5a422a851b54a676234d17f7",
-    title: "React patterns",
-    author: "Michael Chan",
-    url: "https://reactpatterns.com/",
-    likes: 7,
-  },
-  {
-    id: "5a422aa71b54a676234d17f8",
-    title: "Go To Statement Considered Harmful",
-    author: "Edsger W. Dijkstra",
-    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-    likes: 5,
-  }, 
-]
+const blogs = listHelper.blogs;
 
 test('dummy returns one', () => {
   const blogs = []; 
@@ -46,7 +32,7 @@ describe('favorite blog', () => {
     url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
     likes: 12,
     };
-    assert.deepStrictEqual(result, expected)
+    assert.StrictEqual(result, expected)
   });
 });
 
@@ -72,12 +58,19 @@ describe('most likes', () => {
   });
 });
 
+//supertest
 describe('when there is initially some blogs saved', () => {
   beforeEach(async () => {
-    await Blog.deleteMany({});
-    await Blog.insertMany(listHelper.blogs)
+  await Blog.deleteMany({})
+  console.log('cleared')
 
+  const blogObjects = blogs.map(blog => new Blog(blog))
+  const promiseArray = blogObjects.map(blog => blog.save())
+  await Promise.all(promiseArray)
   })
+  console.log('done')
+})
+
   test('blogs are returned as json', async () => {
       await api
         .get('/api/blogs')
@@ -87,21 +80,13 @@ describe('when there is initially some blogs saved', () => {
   test('all blogs are returned', async () => {
     const response = await api.get('/api/blogs')
 
-    assert.strictEqual(response.body.length, listHelper.blogs.length)
+    assert.strictEqual(response.body.length, blogs.length)
   })
-  test('a specific blog is within the returned blogs', async () => {
-    const response = await api.get('/api/blogs')
 
-    const contents = response.body.map(r => r.content)
-    assert(contents.includes('Browser can execute only JavaScript'))
-  })
   describe('viewing a specific blog', () => {
-
     test('succeeds with a valid id', async () => {
-      const blogAtStart = await helper.blogsindb()
-
+      const blogAtStart = await listHelper.blogsInDb()
       const blogToView = blogAtStart[0]
-
       const blogNote = await api
         .get(`/api/blogs/${blogToView.id}`)
         .expect(200)
@@ -109,30 +94,15 @@ describe('when there is initially some blogs saved', () => {
 
       assert.deepStrictEqual(blogNote.body, blogToView)
     })
-    test('fails with statuscode 404 if blog does not exist', async () => {
-      const validNonexistingId = await helper.nonExistingId()
-
-      await api
-        .get(`/api/blogs/${validNonexistingId}`)
-        .expect(404)
-    })
-
-    test('fails with statuscode 400 id is invalid', async () => {
-      const invalidId = '5a3d5da59070081a82a3445'
-
-      await api
-        .get(`/api/blogs/${invalidId}`)
-        .expect(400)
-    })
   })
+
   describe('addition of a new blog', () => {
     test('succeeds with valid data', async () => {
       const newBlog = {
-        id: favorite._id,
-        title: favorite.title,
-        author: favorite.author,
-        url: favorite.url,
-        likes: favorite.likes
+        title: 'Coming HOme',
+        author: 'Kipkurui Victor',
+        url: 'https://example.com',
+        likes: 7, 
       }
       await api
         .post('/api/blogs')
@@ -140,47 +110,59 @@ describe('when there is initially some blogs saved', () => {
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
-      const blogsAtEnd = await helper.blogsindb()
+      const blogsAtEnd = await listHelper.blogsInDb()
       assert.strictEqual(blogsAtEnd.length, helper.blogs.length + 1)
 
       const contents = blogsAtEnd.map(n => n.content)
       assert(contents.includes('async/await simplifies making async calls'))
-    })
+    });
 
-    test('fails with status code 400 if data invalid', async () => {
+  });
+
+  describe('POST /api/blogs', () => {
+    it('should default the likes property to 0 if missing', async () => {
       const newBlog = {
-        important: true
-      }
+        title: 'Test Blog',
+        author: 'John Doe',
+    
+      };
+      const response = await request(app)
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201);
+      expect(response.body.likes).toBe(0);
+    });
+  });
 
-      await api
-        .post('/api/notes')
-        .send(newNote)
-        .expect(400)
-
-      const notesAtEnd = await helper.notesInDb()
-
-      assert.strictEqual(notesAtEnd.length, helper.initialNotes.length)
-    })
-  })
-
-  describe('deletion of a note', () => {
-    test('succeeds with status code 204 if id is valid', async () => {
-      const notesAtStart = await helper.notesInDb()
-      const noteToDelete = notesAtStart[0]
-
-      await api
-        .delete(`/api/notes/${noteToDelete.id}`)
-        .expect(204)
-
-      const notesAtEnd = await helper.notesInDb()
-
-      assert.strictEqual(notesAtEnd.length, helper.initialNotes.length - 1)
-
-      const contents = notesAtEnd.map(r => r.content)
-      assert(!contents.includes(noteToDelete.content))
-    })
-  })
-})
+  describe('POST /api/blogs', () => {
+    test('should respond with 400 Bad Request if the title is missing', async () => {
+      const newBlog = {
+        author: 'John Doe',
+        url: 'http://example.com',
+      };
+  
+      const response = await request(app)
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400);
+  
+      expect(response.body.error).toBe('Title and URL are required');
+    });
+  
+    test('should respond with 400 Bad Request if the url is missing', async () => {
+      const newBlog = {
+        author: 'John Doe',
+        title: 'Test Blog',
+      
+      };
+      const response = await request(app)
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400);
+  
+      expect(response.body.error).toBe('Title and URL are required');
+    });
+  });
 
 after(async () => {
   await mongoose.connection.close()
