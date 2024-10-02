@@ -3,7 +3,6 @@ const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
-const { unknownEndpoint } = require('../utils/middlewares');
 
 const getTokenFrom = request => {
   const authorization = request.get('authorization')
@@ -21,16 +20,15 @@ blogsRouter.get('/', async (req, res) => {
 blogsRouter.get('/:id', async (req, res) => {
   const blog = await Blog.findById(req.params.id);
   if (blog) {
-    res.json(blog);
+    res.status(200).json(blog);
   } else {
-    unknownEndpoint();
+    res.status(404).json('invalid id');
   }
 });
 
 blogsRouter.post('/', async (req, res) => {
 
   const {title, url, likes} = req.body;
-  
   const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid' })
@@ -51,6 +49,16 @@ blogsRouter.post('/', async (req, res) => {
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
   res.status(201).json(savedBlog);
+});
+
+blogsRouter.delete('/:id', async (req, res) => {
+
+  const blogTodelete = await Blog.findByIdAndDelete(req.params.id)
+  if(blogTodelete){
+  return res.status(200).json('Blog deleted successfully')
+  } else {
+  return res.status(404).json('Blog not found');
+  }
 });
 
 module.exports = blogsRouter;

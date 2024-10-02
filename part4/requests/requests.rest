@@ -1,8 +1,10 @@
+//blogs
 GET  http://localhost:3003/api/blogs
+###
+GET  http://localhost:3003/api/blogs/66fc577153374a2cee425047
 ###
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-
 {
   "title": "Cong Home",
   "author": "Victor",
@@ -10,13 +12,23 @@ Content-Type: application/json
   "likes": 10
 }
 ###
-GET  http://localhost:3003/api/blogs/66fc56354c06e13d00b2b85e
-
+DELETE http://localhost:3003/api/blogs/66fc577153374a2cee425047
 ###
-POST http://localhost:3001/api/users
+
+//users
+GET  http://localhost:3003/api/users
+###
+GET http://localhost:3003/api/users/id
+###
+DELETE http://localhost:3003/api/users/id
+###
+POST http://localhost:3003/api/users
 Content-Type: application/json
 {
     "username": "root",
     "name": "Superuser",
     "password": "salainen"
 }
+###
+//login
+POST http://localhost:3003/api/login
