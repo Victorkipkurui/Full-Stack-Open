@@ -1,64 +1,64 @@
 const { test, describe, after,beforeEach } = require('node:test');
 const assert = require('node:assert');
-const listHelper = require('./listhelper');
+const   {dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes, blogsInDb, blogs} = require('./listhelper');
 const mongoose = require('mongoose');
 const request = require('supertest');
 const supertest = require('supertest');
 const app = require('../app'); 
 const Blog = require('../models/blog');
 const api = supertest(app);
-const blogs = listHelper.blogs;
 
-test('dummy returns one', () => {
-  const blogs = []; 
-  const result = listHelper.dummy(blogs); 
-  assert.strictEqual(result, 1);
-});
+describe('Helper functions and Unit Tests',()=>{
+  test('dummy returns one', () => {
+    const blogs = []; 
+    const result = dummy(blogs); 
+    assert.strictEqual(result, 1);
+  });
 
-describe('total likes', () => {
-  test('when list has multiple blogs, equals the sum of likes', () => {
-    const result = listHelper.totalLikes(blogs)
-    assert.strictEqual(result, 36)
+  describe('total likes', () => {
+    test('when list has multiple blogs, equals the sum of likes', () => {
+      const result = totalLikes(blogs)
+      assert.strictEqual(result, 36)
+    })
   })
+
+  describe('favorite blog', () => {
+    test('returns the blog with the most likes', () => {
+      const result = favoriteBlog(blogs);
+      const expected = {
+        id: "5a422b3a1b54a676234d17f9",
+      title: "Canonical string reduction",
+      author: "Edsger W. Dijkstra",
+      url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+      likes: 12,
+      };
+      assert.deepStrictEqual(result, expected)
+    });
+  });
+
+  describe('most blogs', () => {
+    test('returns the author with the most blogs', () => {
+      const result = mostBlogs(blogs);
+      const expected = {
+        author: "Robert C. Martin",
+        blogs: 3    
+      };
+      assert.deepStrictEqual(result, expected);
+    });
+  });
+
+  describe('most likes', () => {
+    test('returns the author with the most likes', () => {
+      const result = mostLikes(blogs);
+      const expected = {
+        author: "Edsger W. Dijkstra",
+        likes: 17   
+      };
+      assert.deepStrictEqual(result, expected);
+    });
+  });
 })
 
-describe('favorite blog', () => {
-  test('returns the blog with the most likes', () => {
-    const result = listHelper.favoriteBlog(blogs);
-    const expected = {
-      id: "5a422b3a1b54a676234d17f9",
-    title: "Canonical string reduction",
-    author: "Edsger W. Dijkstra",
-    url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-    likes: 12,
-    };
-    assert.StrictEqual(result, expected)
-  });
-});
-
-describe('most blogs', () => {
-  test('returns the author with the most blogs', () => {
-    const result = listHelper.mostBlogs(blogs);
-    const expected = {
-      author: "Robert C. Martin",
-      blogs: 3    
-    };
-    assert.deepStrictEqual(result, expected);
-  });
-});
-
-describe('most likes', () => {
-  test('returns the author with the most blogs', () => {
-    const result = listHelper.mostLikes(blogs);
-    const expected = {
-      author: "Edsger W. Dijkstra",
-      likes: 17   
-    };
-    assert.deepStrictEqual(result, expected);
-  });
-});
-
-//supertest
 describe('when there is initially some blogs saved', () => {
   beforeEach(async () => {
   await Blog.deleteMany({})
@@ -85,7 +85,7 @@ describe('when there is initially some blogs saved', () => {
 
   describe('viewing a specific blog', () => {
     test('succeeds with a valid id', async () => {
-      const blogAtStart = await listHelper.blogsInDb()
+      const blogAtStart = await blogsInDb()
       const blogToView = blogAtStart[0]
       const blogNote = await api
         .get(`/api/blogs/${blogToView.id}`)
@@ -99,7 +99,7 @@ describe('when there is initially some blogs saved', () => {
   describe('addition of a new blog', () => {
     test('succeeds with valid data', async () => {
       const newBlog = {
-        title: 'Coming HOme',
+        title: 'Coming Home',
         author: 'Kipkurui Victor',
         url: 'https://example.com',
         likes: 7, 
@@ -110,8 +110,8 @@ describe('when there is initially some blogs saved', () => {
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
-      const blogsAtEnd = await listHelper.blogsInDb()
-      assert.strictEqual(blogsAtEnd.length, helper.blogs.length + 1)
+      const blogsAtEnd = await blogsInDb()
+      assert.strictEqual(blogsAtEnd.length,blogs.length + 1)
 
       const contents = blogsAtEnd.map(n => n.content)
       assert(contents.includes('async/await simplifies making async calls'))
@@ -169,14 +169,14 @@ describe('when there is initially some blogs saved', () => {
 
   describe('deletion of a blog', () => {
     test('succeeds with status code 204 if id is valid', async () => {
-      const blogsAtStart = await listHelper.blogsInDb()
+      const blogsAtStart = await blogsInDb()
       const blogToDelete = blogsAtStart[0]
 
       await api
         .delete(`/api/blogs/${blogToDelete.id}`)
         .expect(204)
 
-      const blogsAtEnd = await listHelper.blogsInDb()
+      const blogsAtEnd = await blogsInDb()
 
       assert.strictEqual(blogsAtEnd.length, blogs.length - 1)
     })
