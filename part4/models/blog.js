@@ -2,11 +2,12 @@ const mongoose = require('mongoose')
 
 const blogSchema = new mongoose.Schema({
   title: String,
-  user: {
+  /*user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
-  },
+  },*/
   url: String,
+  user: String,
   likes: Number
 })
 

@@ -9,4 +9,4 @@ const error = (error) => {
     console.error(error)
   }
 }
-module.exports = {info, error}
+module.exports = { info, error }

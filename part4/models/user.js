@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 const userSchema = new mongoose.Schema({
   username:{
     type: String,
@@ -13,8 +13,8 @@ const userSchema = new mongoose.Schema({
     minLength: 3,
   },
   blogs: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Blog'
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Blog'
   }]
 })
 

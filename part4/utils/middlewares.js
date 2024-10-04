@@ -13,7 +13,7 @@ const unknownEndpoint = (request, response) => {
 }
 
 const internalError = (req, res) => {
-  res.status(500).send('Internal Server Error');
+  res.status(500).send('Internal Server Error')
 }
 
 const errorHandler = (error, request, response, next) => {
