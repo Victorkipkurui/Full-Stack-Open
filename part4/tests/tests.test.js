@@ -71,7 +71,7 @@ describe('when there is initially some blogs saved', () => {
   console.log('done')
 })
 
-test('blogs are returned as json', async () => {
+test.only('blogs are returned as json', async () => {
   await api
     .get('/api/blogs')
     .expect(200)
@@ -119,7 +119,7 @@ describe('addition of a new blog', () => {
 
 })
 
-describe('POST /api/blogs', () => {
+describe('if likes is missing default to 0', () => {
   test('should default the likes property to 0 if missing', async () => {
     const newBlog = {
       title: 'Coming HOme',
@@ -135,7 +135,7 @@ describe('POST /api/blogs', () => {
   })
 })
 
-describe('POST /api/blogs', () => {
+describe('if title or url missing', () => {
   test('should respond with 400 Bad Request if the title is missing', async () => {
     const newBlog = {
       author: 'Kipkurui Victor',
