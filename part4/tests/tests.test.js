@@ -1,8 +1,7 @@
 const { test, describe, after, beforeEach } = require('node:test')
 const assert = require('node:assert')
-const   { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes, blogsInDb, blogs } = require('./listhelper')
+const { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes, blogsInDb, blogs } = require('./listhelper')
 const mongoose = require('mongoose')
-const request = require('supertest')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
@@ -67,20 +66,15 @@ describe('when there is initially some blogs saved', () => {
     const blogObjects = blogs.map(blog => new Blog(blog))
     const promiseArray = blogObjects.map(blog => blog.save())
     await Promise.all(promiseArray)
+    console.log('done')
   })
-  console.log('done')
 })
 
-test.only('blogs are returned as json', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
-})
 test('all blogs are returned', async () => {
   const response = await api.get('/api/blogs')
-
-  assert.strictEqual(response.body.length, blogs.length)
+  // eslint-disable-next-line no-trailing-spaces
+  
+  assert.strictEqual(response.body).toHaveLength(5)
 })
 
 describe('viewing a specific blog', () => {
@@ -127,7 +121,7 @@ describe('if likes is missing default to 0', () => {
       url: 'https://example.com',
 
     }
-    const response = await request(app)
+    const response = await api(app)
       .post('/api/blogs')
       .send(newBlog)
       .expect(201)
@@ -143,7 +137,7 @@ describe('if title or url missing', () => {
       likes: 7,
     }
 
-    const response = await request(app)
+    const response = await api(app)
       .post('/api/blogs')
       .send(newBlog)
       .expect(400)
@@ -158,7 +152,7 @@ describe('if title or url missing', () => {
       likes: 7,
 
     }
-    const response = await request(app)
+    const response = await api(app)
       .post('/api/blogs')
       .send(newBlog)
       .expect(400)

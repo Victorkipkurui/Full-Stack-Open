@@ -9,7 +9,7 @@ export default [
     languageOptions: {
       sourceType: "commonjs",
       globals: {
-        ...globals.node,
+        ...globals.node,...globals.jest
       },
       ecmaVersion: "latest",
     },

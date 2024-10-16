@@ -24,11 +24,19 @@ DELETE http://localhost:3003/api/users/id
 ###
 POST http://localhost:3003/api/users
 Content-Type: application/json
+
 {
-    "username": "root",
+    "username": "rotich",
     "name": "Superuser",
     "password": "salainen"
 }
+
 ###
 //login
 POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+    "username": "rot",
+    "password": "salainen"
+}
