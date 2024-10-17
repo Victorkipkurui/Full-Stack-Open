@@ -4,15 +4,16 @@ GET  http://localhost:3003/api/blogs
 GET  http://localhost:3003/api/blogs/66fc577153374a2cee425047
 ###
 POST http://localhost:3003/api/blogs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvdCIsImlkIjoiNjcwZmJhNGFjZGU5MzNmYWE3MjkxZGE5IiwiaWF0IjoxNzI5MTUwNjA4LCJleHAiOjE3MjkxNTQyMDh9.PX9WTIXQtK_iTtx8-beTKlorZivsMeuStFPFJuPrSRM
 Content-Type: application/json
+
 {
-  "title": "Cong Home",
-  "author": "Victor",
-  "url": "https://blogs/4",
-  "likes": 10
+  "title": "My New Bog",
+  "url": "https://example.com/ne-blog",
+  "likes": 5
 }
 ###
-DELETE http://localhost:3003/api/blogs/66fc577153374a2cee425047
+DELETE http://localhost:3003/api/blogs/66fce7077a37530e74255f5c
 ###
 
 //users
@@ -26,7 +27,7 @@ POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
-    "username": "rotich",
+    "username": "hereh",
     "name": "Superuser",
     "password": "salainen"
 }
