@@ -2,15 +2,8 @@ require('express-async-errors')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const jwt = require('jsonwebtoken')
+const { tokenExtractor, userExtractor } = require('../utils/middlewares')
 
-const getTokenFrom = (request) => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    return authorization.substring(7)
-  }
-  return null
-}
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
     .find({}).populate('user', { username: 1 })
@@ -26,17 +19,12 @@ blogsRouter.get('/:id', async (req, res) => {
   }
 })
 
-blogsRouter.post('/', async (req, res) => {
+blogsRouter.post('/',tokenExtractor, userExtractor, async (req, res) => {
   const { title, url, likes } = req.body
 
-  const token = getTokenFrom(req)
-  const decodedToken = jwt.verify(token, process.env.SECRET)
-
-  if (!decodedToken.id) {
-    return res.status(401).json({ error: 'Token invalid' })
+  if (!req.user) {
+    return res.status(401).json({ error: 'Token missing or invalid' })
   }
-
-  const user = await User.findById(decodedToken.id)
 
   if (!title || !url) {
     return res.status(400).json({ error: 'Title and URL are required' })
@@ -45,11 +33,12 @@ blogsRouter.post('/', async (req, res) => {
   const blog = new Blog({
     title,
     url,
-    user: user.id,
+    user: req.user.id,
     likes: likes || 0,
   })
 
   const savedBlog = await blog.save()
+  const user = await User.findById(req.user.id)
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
 
@@ -80,7 +69,6 @@ blogsRouter.delete('/:id', async (req, res) => {
     return res.status(401).json({ error: 'Token missing or invalid' })
   }
   const blogToDelete = await Blog.findById(req.params.id)
-
   if (!blogToDelete) {
     return res.status(404).json({ error: 'Blog not found' })
   }

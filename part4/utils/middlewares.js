@@ -15,7 +15,7 @@ const unknownEndpoint = (request, response) => {
 const tokenExtractor = (req, res, next) => {
   const authorization = req.get('authorization')
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    req.token = authorization.substring(7)
+    req.token = authorization.substring(7) // Attach token to request object
   } else {
     req.token = null
   }
@@ -28,7 +28,7 @@ const userExtractor = (req, res, next) => {
     if (!decodedToken.id) {
       return res.status(401).json({ error: 'Token invalid' })
     }
-    req.user = decodedToken
+    req.user = decodedToken // Attach decoded token (user data) to request object
   } else {
     req.user = null
   }

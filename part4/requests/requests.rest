@@ -1,19 +1,21 @@
 //blogs
 GET  http://localhost:3003/api/blogs
 ###
-GET  http://localhost:3003/api/blogs/66fc577153374a2cee425047
+GET  http://localhost:3003/api/blogs/6710bea222c64dc0f298d528
 ###
 POST http://localhost:3003/api/blogs
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvdCIsImlkIjoiNjcwZmJhNGFjZGU5MzNmYWE3MjkxZGE5IiwiaWF0IjoxNzI5MTUwNjA4LCJleHAiOjE3MjkxNTQyMDh9.PX9WTIXQtK_iTtx8-beTKlorZivsMeuStFPFJuPrSRM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvdCIsImlkIjoiNjcwZmJhNGFjZGU5MzNmYWE3MjkxZGE5IiwiaWF0IjoxNzI5MTU0Mzg5LCJleHAiOjE3MjkxNTc5ODl9.5PVfoms3eOAetWCHz8tAXFCLQdQ7PHiXHoXPdKSrnFg
 Content-Type: application/json
 
 {
-  "title": "My New Bog",
+  "title": "My Ne Bog",
   "url": "https://example.com/ne-blog",
   "likes": 5
 }
 ###
-DELETE http://localhost:3003/api/blogs/66fce7077a37530e74255f5c
+DELETE http://localhost:3003/api/blogs/6710d4ff665ca62313ef61aa
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvdCIsImlkIjoiNjcwZmJhNGFjZGU5MzNmYWE3MjkxZGE5IiwiaWF0IjoxNzI5MTU0Mzg5LCJleHAiOjE3MjkxNTc5ODl9.5PVfoms3eOAetWCHz8tAXFCLQdQ7PHiXHoXPdKSrnFg
+Content-Type: application/json
 ###
 
 //users
@@ -27,7 +29,7 @@ POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
-    "username": "hereh",
+    "username": "herehi",
     "name": "Superuser",
     "password": "salainen"
 }

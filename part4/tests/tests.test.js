@@ -91,6 +91,24 @@ describe('viewing a specific blog', () => {
 })
 
 describe('addition of a new blog', () => {
+  let token
+  beforeAll(async () => {
+    const userCredentials = {
+      username: 'testuser',
+      password: 'password123'
+    }
+
+    await api
+      .post('/api/users')
+      .send(userCredentials)
+
+    const loginResponse = await api
+      .post('/api/login')
+      .send(userCredentials)
+
+    token = loginResponse.body.token
+  })
+
   test('succeeds with valid data', async () => {
     const newBlog = {
       title: 'Coming Home',
@@ -100,17 +118,17 @@ describe('addition of a new blog', () => {
     }
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
     const blogsAtEnd = await blogsInDb()
-    assert.strictEqual(blogsAtEnd.length,blogs.length + 1)
+    assert.strictEqual(blogsAtEnd.length, blogs.length + 1)
 
-    const contents = blogsAtEnd.map(n => n.content)
-    assert(contents.includes('async/await simplifies making async calls'))
+    const contents = blogsAtEnd.map(n => n.title)
+    assert(contents.includes('Coming Home'))
   })
-
 })
 
 describe('if likes is missing default to 0', () => {
